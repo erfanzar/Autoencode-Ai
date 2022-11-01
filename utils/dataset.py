@@ -22,28 +22,28 @@ class DataLoaderTorch:
 
         if self.dataset is not None:
             print(f"{Cp.CYAN}Searching for {self.dataset}{Cp.RESET} ... \n", end='')
-            if os.path.exists(f'.data/downloaded_data_tarin_{self.dataset}'):
+            if os.path.exists(f'data/downloaded_data_tarin_{self.dataset}'):
                 print(
                     f"{Cp.CYAN}{self.dataset} Train Found Skip Download {self.dataset}{Cp.RESET} [*] \n", end='')
                 download_train = False
             else:
                 print(
                     f"{Cp.RED}{self.dataset} Train not Found Download Added To Theread {Cp.RESET} [*] \n", end='')
-                download_train = False
+                download_train = True
 
-            if os.path.exists(f'.data/downloaded_data_val_{self.dataset}'):
+            if os.path.exists(f'data/downloaded_data_val_{self.dataset}'):
                 print(
                     f"{Cp.CYAN}{self.dataset} Val Found Skip Download {self.dataset}{Cp.RESET} [*] \n", end='')
-                downlaod_val = False
+                download_val = False
             else:
                 print(
                     f"{Cp.RED}{self.dataset} Val not Found Download Added To Theread {Cp.RESET} [*] \n{Cp.BLUE}", end='')
-                download_val = False
+                download_val = True
 
             self.data_train = compile(
-                f"datasets.{self.dataset}(root='.data/downloaded_data_tarin_{self.dataset}',train=True,download={download_train})", f"{self.dataset}_train", 'single')
+                f"datasets.{self.dataset}(root='data/downloaded_data_tarin_{self.dataset}',train=True,download={download_train})", f"{self.dataset}_train", 'single')
             self.data_eval = compile(
-                f"datasets.{self.dataset}(root='.data/downloaded_data_val_{self.dataset}',train=False,download={download_val})", f"{self.dataset}_val", 'single')
+                f"datasets.{self.dataset}(root='data/downloaded_data_val_{self.dataset}',train=False,download={download_val})", f"{self.dataset}_val", 'single')
             try:
                 thered = [threading.Thread(target=eval(self.data_train)), threading.Thread(
                     target=eval(self.data_eval))]
