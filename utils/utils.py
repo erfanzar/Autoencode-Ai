@@ -4,11 +4,14 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 from dataclasses import dataclass
-import numba as np
+from modules.commons import *
+import numba as nb
+import yaml
+
 Any = [list, dict, int, float, str]
 
+
 class Cp:
-    
     Type = 1
     BLACK = f'\033[{Type};30m'
     RED = f'\033[{Type};31m'
@@ -19,3 +22,40 @@ class Cp:
     CYAN = f'\033[{Type};36m'
     WHITE = f'\033[{Type};1m'
     RESET = f"\033[{Type};39m"
+
+
+def read_yaml(path: str):
+    with open(path, 'r') as r:
+        data = yaml.full_load(r)
+    return data
+
+
+def print_model(model, args, form, times, index):
+    print('{}  {:<5}{:>20}{:>5}{:>10}    -    {:<25} \n'.format(f'\033[1;39m', f"{index}", f"{form}", f"{times}",
+                                                                f"{model}",
+                                                                f"{args}"))
+
+
+def arg_creator(arg: list = None, prefix=None):
+    # print(*((f' {v},' if i != len(arg) else f'{v}') for i, v in enumerate(arg)))
+    created_args = f''.join(
+        (((f'{prefix if prefix is not None else ""},{v},' if i == 0 else f'{v},') if i != len(arg) - 1 else f'{v}') for
+         i, v in enumerate(arg)))
+    return created_args
+
+
+def pars_model(cfg, detail: str = None, print_status: bool = False, sc: int = 3):
+    saves = []
+    model = nn.ModuleList()
+    c_req = ['Conv', 'TConv']
+    if detail is not None:
+        print(detail, end='')
+    for i, c in enumerate(cfg):
+        f, t, m, arg = c
+        if print_status: print_model(m, arg, f, t, i)
+        prefix = sc if m in c_req else ''
+        arg = arg_creator(arg, prefix=prefix)
+        model_name = f'{m}({arg})'
+        print(f"Adding : {model_name}")
+        sc = arg[0] if m in c_req else sc
+        m = eval(model_name)

@@ -1,0 +1,27 @@
+encode:
+  [
+    [ -1,1,Conv,[ 16,3,2,None,1,nn.ReLU() ] ],# P-2
+    [ -1,1,Conv,[ 32,3,2,None,1,nn.ReLU() ] ],# P-4
+
+    [ -1,1,Conv,[ 64,3,2,None,1,nn.ReLU() ] ],# P-8
+    [ -1,1,Conv,[ 128,3,2,None,1,nn.ReLU() ] ],# P-16
+
+    [ -1,1,Conv,[ 256,3,2,None,1,nn.ReLU() ] ],# P-32
+    [ -1,1,Conv,[ 256,3,2,None,1,nn.ReLU() ] ],# P-64
+
+  ]
+
+decode:
+  [
+    [ -1,1,TConv,[ 256,3,2,None,None,1,nn.ReLU() ] ],# P-64
+    [ -1,1,TConv,[ 256,3,2,None,None,1,nn.ReLU() ] ],# P-32
+
+    [ -1,1,TConv,[ 128,3,2,None,None,1,nn.ReLU() ] ],# P-16
+    [ -1,1,TConv,[ 64,3,2,None,None,1,nn.ReLU() ] ],# P-8
+
+    [ -1,1,TConv,[ 32,3,2,None,None,1,nn.ReLU() ] ],# P-4
+    [ -1,1,TConv,[ 16,3,2,None,None,1,nn.ReLU() ] ],# P-2
+    [ -1,1,Sigmoid,[ ] ]
+  ]
+
+c1: 3
