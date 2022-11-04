@@ -11,35 +11,6 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 
 
-class HandiModule(nn.Module):
-    def __init__(self):
-        super(HandiModule, self).__init__()
-        self.encoder = nn.Sequential(
-            nn.Conv2d(1, 16, 3, stride=2, padding=1),
-            nn.ReLU(),
-            nn.Conv2d(16, 32, 3, stride=2, padding=1),
-            nn.ReLU(),
-            nn.Conv2d(32, 64, 7),
-        )
-
-        self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(64, 32, 7),
-            nn.ReLU(),
-            nn.ConvTranspose2d(32, 16, 3, stride=2, padding=1, output_padding=1),
-            nn.ReLU(),
-            nn.ConvTranspose2d(16, 1, 3, stride=2, padding=1, output_padding=1),
-            nn.Sigmoid(),
-        )
-
-    def forward(self, x):
-    
-        
-        
-        encoder = self.encoder(x)
-     
-        x = self.decoder(encoder)
-     
-        return x
 
 
 if __name__ == "__main__":
@@ -47,10 +18,10 @@ if __name__ == "__main__":
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
     # device = 'cpu'
     epochs = 1000
-    img_size = 28
+    img_size = 68
     dtt = DataLoaderTorch(dataset="MNIST")
-    # model = TModel(cfg='cfg/AEA-S.yaml').to(device=device)
-    model = HandiModule().to(device)
+    model = TModel(cfg='cfg/AEA-S.yaml').to(device=device)
+   
     attar_print('Loading DataLoaderTorch Eval ...')
     data_eval = dtt.return_dataLoader_eval()
     attar_print('Done Loading DataLoaderTorch Eval [*]')
@@ -65,9 +36,9 @@ if __name__ == "__main__":
     batch_loop_eval = math.ceil(data_eval.__len__()/dtt.batch_size)
     loss_func = torch.nn.MSELoss()
 
-    # optimizer = torch.optim.Adam(
-    #     (list(model.encoder.parameters())+list(model.decoder.parameters())), 1e-4)
-    optimizer = torch.optim.Adam(model.parameters(), 1e-3,weight_decay=1e-5)
+    optimizer = torch.optim.Adam(
+        model.parameters(),  1e-3,weight_decay=1e-5)
+
     attar_print(
         f'tottal loops for train and eval the model and data are {batch_loop_train} / {batch_loop_eval}')
     for epoch in range(epochs):

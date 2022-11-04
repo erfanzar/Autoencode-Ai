@@ -10,10 +10,10 @@ class Conv(nn.Module):
     def __init__(self, c1: int, c2: int, k: int = 1, s: int = 1, p: int = None, g: int = 1, act: torch.nn = None):
         super(Conv, self).__init__()
         self.conv = nn.Conv2d(c1, c2, k, s, (0 if not k == 3 else 1) if p is None else p, groups=g)
-        self.act = eval(f"nn.{act}" if act is not None else 'nn.Identity()')
+        self.act = eval(f"nn.{act}" )if act is not None else False
 
     def forward(self, x):
-        return self.act(self.conv(x))
+        return self.act(self.conv(x)) if self.act is not False else self.conv(x)
 
 
 class TConv(nn.Module):
@@ -23,10 +23,10 @@ class TConv(nn.Module):
         self.conv = nn.ConvTranspose2d(in_channels=c1, out_channels=c2, kernel_size=k, stride=s,
                                        padding=(0 if not k == 3 else 1) if p is None else p,
                                        output_padding=(0 if not k == 3 else 1) if op is None else op, groups=g)
-        self.act = eval(f"nn.{act}" if act is not None else 'nn.Identity()')
+        self.act = eval(f"nn.{act}" )if act is not None else False
 
     def forward(self, x):
-        return self.act(self.conv(x))
+        return self.act(self.conv(x)) if self.act is not False else self.conv(x)
 
 
 class Sigmoid(nn.Module):
