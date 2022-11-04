@@ -29,10 +29,12 @@ def read_yaml(path: str):
         data = yaml.full_load(r)
     return data
 
+def attar_print(*args , color=Cp.GREEN,end_color=Cp.RESET,end = '\n'):
+    print(*(f'{color if i == 0 else ""}{arg}{end_color}' for i,arg in enumerate(args)),end=end)
 
 def print_model(model, args, form, times, index):
-    print('{}  {:<5}{:>20}{:>5}{:>10}    -    {:<25} \n'.format(f'\033[1;39m', f"{index}", f"{form}", f"{times}",
-                                                                f"{model}",
+    print('{}  {:<5}{:<10}{:<10}{:>10}    -    {:<25} \n'.format(f'\033[1;39m', f"{index}", f"{form}", f"{times}",
+                                                                f"{Cp.BLUE}{model}{Cp.RESET}",
                                                                 f"{args}"))
 
 
@@ -53,9 +55,14 @@ def pars_model(cfg, detail: str = None, print_status: bool = False, sc: int = 3)
     for i, c in enumerate(cfg):
         f, t, m, arg = c
         if print_status: print_model(m, arg, f, t, i)
+        
         prefix = sc if m in c_req else ''
-        arg = arg_creator(arg, prefix=prefix)
-        model_name = f'{m}({arg})'
-        print(f"Adding : {model_name}")
+        arg_ = arg_creator(arg, prefix=prefix)
+        model_name = f'{m}({arg_})'
+        if not print_status :print(f"Adding : {model_name}")
+      
         sc = arg[0] if m in c_req else sc
+     
         m = eval(model_name)
+        model.append(m)
+    return model
