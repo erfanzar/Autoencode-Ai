@@ -46,7 +46,7 @@ if __name__ == "__main__":
     print('Somethings...')
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
     # device = 'cpu'
-    epochs = 100
+    epochs = 1000
     img_size = 28
     dtt = DataLoaderTorch(dataset="MNIST")
     # model = TModel(cfg='cfg/AEA-S.yaml').to(device=device)
@@ -67,16 +67,18 @@ if __name__ == "__main__":
 
     # optimizer = torch.optim.Adam(
     #     (list(model.encoder.parameters())+list(model.decoder.parameters())), 1e-4)
-    optimizer = torch.optim.Adam(model.parameters(), 1e-4)
+    optimizer = torch.optim.Adam(model.parameters(), 1e-3,weight_decay=1e-5)
     attar_print(
         f'tottal loops for train and eval the model and data are {batch_loop_train} / {batch_loop_eval}')
     for epoch in range(epochs):
         outputs = torch.zeros((32, 1, img_size, img_size))
+        iter_data_train = iter(data_train)
+        iter_data_eval = iter(data_eval)
         org = torch.zeros((32, 1, img_size, img_size))
         for i in range(batch_loop_train):
             s = time.time()
             try:
-                data_train_batch = next(iter_data_train)
+                data_train_batch = iter_data_train.next()
                 optimizer.zero_grad()
                 x, _ = data_train_batch
                 x = fn.resize(x, size=[img_size, img_size])
@@ -93,7 +95,9 @@ if __name__ == "__main__":
                     f'\r epoch : {epoch} / {epochs} batch num : {i}/{batch_loop_train}   loss : {loss.item()} MAP : {time.time() - s}', end='', color=Cp.BLUE)
             except StopIteration:
                 # iter_data_train = iter(data_train)
+                attar_print('We Got Break Point \n')
                 pass
+                
            
         if epoch % 15 == 0:
             # plt.figure(figsize=(9,2))
