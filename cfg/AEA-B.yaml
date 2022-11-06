@@ -1,0 +1,22 @@
+start_channel: 3
+end_channel: 16
+is_linear: False
+
+
+encode:
+  [
+    [ -1,1,Conv,[ 16,3,2,0,1,nn.ReLU() ] ],#14,20
+    [ -1,1,Conv,[ 32,3,2,0,1,nn.ReLU() ] ],#14,20
+    [ -1,1,Conv,[ 64,3,2,0,1,nn.ReLU() ] ],#14,20
+    [ -1,1,Conv,[ 16,3,2,0,1,None ] ],#14,20
+
+  ]
+
+decode:
+  [
+
+    [ -1,1,TConv,[ 64,3,2,0,0,1,nn.ReLU() ] ], #8,14
+    [ -1,1,TConv,[ 32,3,2,0,0,1,nn.ReLU() ] ], #8,14
+    [ -1,1,TConv,[ 16,3,2,0,0,1,nn.ReLU() ] ], #8,14
+    [ -1,1,TConv,[ 3,3,2,0,1,1,nn.Sigmoid() ] ], #14,28
+  ]

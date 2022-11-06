@@ -1,0 +1,25 @@
+start_channel: 0
+end_channel: 0
+is_linear: True
+
+
+encode:
+  [
+    [ -1,1,Linear,[ 128*2,96,nn.ReLU() ] ],
+    [ -1,1,Linear,[ 96,49,nn.ReLU() ] ],
+    [ -1,1,Linear,[ 49,35,nn.ReLU() ] ],
+    [ -1,1,Linear,[ 35,20,nn.ReLU() ] ],
+    [ -1,1,Linear,[ 20,10,nn.ReLU() ] ],
+    [ -1,1,Linear,[ 10,5,None ] ],
+  ]
+
+decode:
+  [
+    [ -1,1,Linear,[ 5,10,nn.ReLU() ] ],
+    [ -1,1,Linear,[ 10,20,nn.ReLU() ] ],
+    [ -1,1,Linear,[ 20,35,nn.ReLU() ] ],
+    [ -1,1,Linear,[ 35,49,nn.ReLU() ] ],
+    [ -1,1,Linear,[ 49,96,nn.ReLU() ] ],
+    [ -1,1,Linear,[ 94,128*2,nn.Sigmoid() ] ],
+    [ -1,1,Sigmoid,[ ] ]
+  ]
